@@ -1,0 +1,48 @@
+version: '3'
+
+volumes:
+  pg_data:
+  static:
+
+services:
+  db:
+    image: postgres:13.10
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - taski_net
+
+  backend:
+    build: ./backend/
+    env_file: .env
+    volumes:
+      - static:/backend_static
+    networks:
+      - taski_net
+
+  frontend:
+    build: ./frontend/
+    env_file: .env
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+    networks:
+      - taski_net
+
+  gateway:
+    build: ./gateway/
+    env_file: .env
+    volumes:
+      - static:/staticfiles/
+      - /etc/letsencrypt:/etc/letsencrypt:ro  
+    ports:
+      - 8000:80
+      - 443:443
+    networks:
+      - taski_net
+
+networks:
+  taski_net:
+    driver: bridge
+
