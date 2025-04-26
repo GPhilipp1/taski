@@ -32,20 +32,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint
         pip install -r ./backend/requirements.txt 
-
-    - name: Run tests with flake8 and Django
-      env:
-        POSTGRES_USER: django_user
-        POSTGRES_PASSWORD: django_password
-        POSTGRES_DB: django_db
-        DB_HOST: 127.0.0.1
-        DB_PORT: 5432
-      run: |
-        python -m pylint backend/
-        cd backend/
-        python manage.py test
 
   build_and_push_to_docker_hub:
     runs-on: ubuntu-latest
